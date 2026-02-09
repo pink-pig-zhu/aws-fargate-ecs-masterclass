@@ -1,9 +1,9 @@
 version: 0.2
- 
+
 phases:
   install:
     runtime-versions:
-      nodejs: 16       
+      nodejs: 16
   pre_build:
     commands:
       - echo Logging in to Amazon ECR.....
@@ -14,15 +14,14 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - echo Building the Docker image...
+      - cd 07-CICD-ContinuousIntegration-ContinuousDeployment
       - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Pushing the Docker images...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo Writing image definitions file...
       - printf '[{"name":"ecs-cicd-nginx","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+
 artifacts:
   files:
-    - imagedefinitions.json
+    - 07-CICD-ContinuousIntegration-ContinuousDeployment/imagedefinitions.json
